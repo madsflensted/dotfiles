@@ -1,0 +1,4 @@
+source $HOME/dotfiles/bash_commands/marks
+source $HOME/dotfiles/bash_commands/hgrep
+
+export PATH=$HOME/.cabal/bin/:$PATH

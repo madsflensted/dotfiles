@@ -1,0 +1,1 @@
+alias bcut="tr -s ' ' ' ' | cut -d ' '"

@@ -1,0 +1,8 @@
+function hgrep {
+  cmd="history"
+  for arg in "$@"
+  do
+    cmd="$cmd | grep --color $arg"
+  done
+  eval $cmd
+}
