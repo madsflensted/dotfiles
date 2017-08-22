@@ -6,3 +6,5 @@ function hgrep {
   done
   eval $cmd
 }
+
+export -f hgrep

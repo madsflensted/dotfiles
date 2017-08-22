@@ -21,3 +21,7 @@ _completemarks() {
 }
 
 complete -F _completemarks cdj unmark
+
+export -f djc
+export -f mark
+export -f marks

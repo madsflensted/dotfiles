@@ -1,0 +1,18 @@
+[user]
+	name = Flensted-Urech, Mads
+	email = Mads.FlenstedUrech@sc.com
+[alias]
+	st = status
+	co = checkout
+	pl = pull 
+	pr = pull --rebase
+	ps = push
+	cm = commit
+	unstage = reset HEAD --
+	diff = diff --color
+  tree = log --all --graph --decorate=short --color --format=format:'%C(bold blue)%h%C(reset) %C(red)%d%C(reset)\n         %C(black)[%cr]%C(reset)  %x09%C(black)%an: %s %C(reset)'
+	wdiff = diff --color-words
+	df = diff --color
+
+[push]
+	default = current

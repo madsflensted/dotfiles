@@ -5,6 +5,11 @@ silent execute '!mkdir -p ~/tmp/vim-backup'
 set directory=~/tmp/vim-backup/
 set backupdir=~/tmp/vim-backup/
 
+" Maintain undo history between sessions
+silent execute '!mkdir -p ~/tmp/vim-undos'
+set undodir=~/tmp/vim-undos/
+set undofile
+
 " Vundle setup
 let bundle_path = '~/.vim/bundle'
 silent execute '!mkdir -p ~/.vim/bundle'
@@ -12,11 +17,11 @@ silent execute '!mkdir -p ~/.vim/bundle'
 filetype off                  " required
 
 " set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/vundle/
+set rtp+=~/.vim/bundle/Vundle.vim/
 call vundle#begin(bundle_path)
 
 " let Vundle manage Vundle, required
-Plugin 'gmarik/vundle'
+Plugin 'VundleVim/Vundle.vim'
 
 Plugin 'vim-scripts/bufkill.vim'
 Plugin 'talek/obvious-resize'
@@ -27,6 +32,10 @@ Plugin 'Lokaltog/vim-powerline'
 Plugin 'madsflensted/molokai'
 Plugin 'michalbachowski/vim-wombat256mod'
 
+" Tmux
+Plugin 'christoomey/vim-tmux-navigator'
+Plugin 'benmills/vimux'
+
 " Substituate and preserve casing
 Plugin 'tpope/vim-abolish'
 
@@ -36,17 +45,35 @@ Plugin 'kien/ctrlp.vim'
 " Code
 Plugin 'tpope/vim-commentary'
 Plugin 'tpope/vim-surround'
-Plugin 'scrooloose/syntastic'
+" Conflict with ale
+" Plugin 'scrooloose/syntastic'
 Plugin 'AndrewRadev/linediff.vim'
+Plugin 'w0rp/ale'
+
+" Go
+Plugin 'fatih/vim-go'
+
+" Snipmate
+Plugin 'MarcWeber/vim-addon-mw-utils'
+Plugin 'tomtom/tlib_vim'
 Plugin 'garbas/vim-snipmate'
+" Optional:
+Plugin 'honza/vim-snippets'
 
 " Git
 Plugin 'tpope/vim-fugitive'
+Plugin 'junegunn/gv.vim'
+
 
 " Python
 Plugin 'klen/python-mode'
 Plugin 'michaeljsmith/vim-indent-object'
 Plugin 'zweifisch/pipe2eval'
+" Plugin 'Yggdroot/indentLine'
+Plugin 'alfredodeza/pytest.vim'
+
+" Ansible
+Plugin 'pearofducks/ansible-vim'
 
 " Elm
 " Plugin 'lambdatoast/elm.vim'
@@ -58,7 +85,6 @@ Plugin 'carlosgaldino/elixir-snippets'
 
 " Tasks
 Plugin 'samsonw/vim-task'
-Plugin 'MarcWeber/vim-addon-mw-utils'
 
 " PlantUml, ascii -> diagram converter
 Plugin 'aklt/plantuml-syntax'
@@ -68,9 +94,6 @@ Plugin 'aklt/plantuml-syntax'
 "Bundle 'davidhalter/jedi-vim'
 "Bundle 'Shougo/vimproc.vim'
 "Bundle 'Shougo/vimshell.vim'
-
-" Other examples:
-" NOTE: comments after Bundle commands are not allowed.
 
 call vundle#end()
 filetype plugin indent on
@@ -137,6 +160,9 @@ inoremap jk <esc>
 inoremap kj <esc>
 " NO good  - triggers too often, inoremap fd <esc>
 
+" Remove highlights from recent search
+nmap <silent> ./ :nohlsearch<CR>
+
 " Windows movement
 map <c-j> <c-w>j
 map <c-k> <c-w>k
@@ -155,6 +181,8 @@ autocmd FileType python set omnifunc=pythoncomplete#Complete
 " Answer found here: http://stackoverflow.com/questions/2063175/vim-insert-mode-comments-go-to-start-of-line
 inoremap # X#
 
+let g:indentLine_enabled = 0
+
 " Syntastic
 let g:syntastic_mode_map = { 'mode': 'active',
                            \ 'active_filetypes': [],
@@ -162,10 +190,10 @@ let g:syntastic_mode_map = { 'mode': 'active',
 
 " Pymode
 let g:pymode_folding = 0
-"let g:pymode_lint_checkers ['pyflakes', 'pep8', 'mccabe']
-"let g:pymode_lint_config = "$HOME/.pylintrc"
+" let g:pymode_lint_checkers ['pyflakes', 'pep8', 'mccabe']
+" let g:pymode_lint_config = "$HOME/.pylintrc"
 " PEP8 "E501" is equal to pylint "C0301"
-let g:pymode_lint_ignore = "E501,C0301"
+let g:pymode_lint_ignore = "C0301"
 let g:pymode_lint_cwindow = 0
 "let g:pymode_lint_message = 0
 let g:pymode_lint_write = 0
@@ -177,11 +205,11 @@ let g:pymode_virtualenv = 1
 let g:pymode_utils_whitespaces = 1
 " Enable pymode indentation
 let g:pymode_indent = 1
-let g:pymode_rope = 1
+let g:pymode_rope = 0
 let g:pymode_rope_guess_project = 0
 let g:pymode_rope_completion = 0
 let g:pymode_rope_complete_on_dot = 0
-let g:pymode_options_max_line_length = 250
+let g:pymode_options_max_line_length = 79
 
 "autocmd BufReadCmd *_test.py let g:pymode_lint_ignore="E211"
 
@@ -191,6 +219,11 @@ noremap <silent> <F3> :call pymode#rope#goto_definition()<CR>
 let g:SuperTabDefaultCompletionType = "context"
 
 autocmd BufReadCmd *.jar,*.xpi,*.exp,*.ear,*.war call zip#Browse(expand("<amatch>"))
+
+" ALE
+let g:ale_yaml_yamllint_options = "-d relaxed"
+let g:ale_python_flake8_args = "--ignore=C"
+let g:ale_linters = {'python': ['flake9']}
 
 " CtrlP settings
 set wildignore+=*.sw*,*.pyc,*.class
