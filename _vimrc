@@ -155,13 +155,16 @@ if has('gui_running')
   set guioptions-=m " remove the menu
 endif
 
+" Leader
+let mapleader = ','
+
 " Remap esc to the 'smash' (jam k and j down to escape)
 inoremap jk <esc>
 inoremap kj <esc>
 " NO good  - triggers too often, inoremap fd <esc>
 
 " Remove highlights from recent search
-nmap <silent> ./ :nohlsearch<CR>
+nmap <silent> <Leader>/ :nohlsearch<CR>
 
 " Windows movement
 map <c-j> <c-w>j
@@ -231,8 +234,11 @@ let g:ctrlp_by_filename = 0
 let g:ctrlp_match_window_reversed = 1
 let g:ctrlp_dotfiles = 1
 
+" Elm
 autocmd BufNewFile,BufRead *.elm set filetype=elm
 "autocmd BufNewFile,BufRead *.json set ft=javascript
+let g:elm_make_show_warnings = 0
+let g:elm_make_syntastic_show_warnings = 0
 
 let NERDTreeIgnore = ['\.pyc$', '\.class$', '__pycache__']
 map <F2> :NERDTreeToggle<CR>
