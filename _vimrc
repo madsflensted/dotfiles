@@ -50,6 +50,9 @@ Plugin 'tpope/vim-surround'
 Plugin 'AndrewRadev/linediff.vim'
 Plugin 'w0rp/ale'
 
+" Ctags and Universal Ctags
+Plugin 'majutsushi/tagbar'
+
 " Go
 Plugin 'fatih/vim-go'
 
@@ -76,8 +79,13 @@ Plugin 'alfredodeza/pytest.vim'
 Plugin 'pearofducks/ansible-vim'
 
 " Elm
-" Plugin 'lambdatoast/elm.vim'
-Plugin 'ajhager/elm-vim'
+Plugin 'ElmCast/elm-vim'
+Plugin 'bitterjug/vim-tagbar-ctags-elm'
+
+" Erlang
+" Plugin 'vim-erlang/vim-erlang-runtime'
+" Plugin 'vim-erlang/vim-erlang-compiler'
+" Plugin 'vim-erlang/vim-erlang-tags'
 
 " Elixir
 Plugin 'elixir-lang/vim-elixir'
@@ -88,6 +96,9 @@ Plugin 'samsonw/vim-task'
 
 " PlantUml, ascii -> diagram converter
 Plugin 'aklt/plantuml-syntax'
+
+" REST/HTTP curl
+Plugin 'diepm/vim-rest-console'
 
 " Discarded bundles, keep for reference
 " jedi-vim: slowed vim response
@@ -157,6 +168,7 @@ endif
 
 " Leader
 let mapleader = ','
+let maplocalleader = "\\"
 
 " Remap esc to the 'smash' (jam k and j down to escape)
 inoremap jk <esc>
@@ -178,6 +190,12 @@ noremap <silent> <C-Down> :ObviousResizeDown<CR>
 noremap <silent> <C-Left> :ObviousResizeLeft<CR>
 noremap <silent> <C-Right> :ObviousResizeRight<CR>
 
+" REST
+let g:vrc_set_default_mapping = 0
+autocmd BufNewFile,BufRead *.rest set filetype=rest
+noremap <silent> <F5> :call VrcQuery()<CR>
+
+" Python
 autocmd FileType python set omnifunc=pythoncomplete#Complete
 
 " Python comment and smartindent, avoid moving '#' to beginnin of line
@@ -226,7 +244,7 @@ autocmd BufReadCmd *.jar,*.xpi,*.exp,*.ear,*.war call zip#Browse(expand("<amatch
 " ALE
 let g:ale_yaml_yamllint_options = "-d relaxed"
 let g:ale_python_flake8_args = "--ignore=C"
-let g:ale_linters = {'python': ['flake9']}
+let g:ale_linters = {'python': ['flake9'], 'erlang': ['syntaxerl']}
 
 " CtrlP settings
 set wildignore+=*.sw*,*.pyc,*.class
