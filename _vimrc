@@ -27,10 +27,12 @@ Plugin 'vim-scripts/bufkill.vim'
 Plugin 'talek/obvious-resize'
 Plugin 'vim-scripts/scratch.vim'
 Plugin 'Lokaltog/vim-powerline'
+Plugin 'enricobacis/paste.vim'
 
 " Color
 Plugin 'madsflensted/molokai'
-Plugin 'michalbachowski/vim-wombat256mod'
+Plugin 'jeffkreeftmeijer/vim-dim'
+Plugin 'gerw/vim-HiLinkTrace'
 
 " Tmux
 Plugin 'christoomey/vim-tmux-navigator'
@@ -49,12 +51,10 @@ Plugin 'tpope/vim-surround'
 " Plugin 'scrooloose/syntastic'
 Plugin 'AndrewRadev/linediff.vim'
 Plugin 'w0rp/ale'
+Plugin 'maralla/completor.vim'
 
 " Ctags and Universal Ctags
 Plugin 'majutsushi/tagbar'
-
-" Go
-Plugin 'fatih/vim-go'
 
 " Snipmate
 Plugin 'MarcWeber/vim-addon-mw-utils'
@@ -67,6 +67,8 @@ Plugin 'honza/vim-snippets'
 Plugin 'tpope/vim-fugitive'
 Plugin 'junegunn/gv.vim'
 
+" Go
+Plugin 'fatih/vim-go'
 
 " Python
 Plugin 'klen/python-mode'
@@ -148,23 +150,12 @@ autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 "set autowrite
 set autoread
 
-"colorscheme wombat256mod
-colorscheme molokai
 let g:rehash256 = 1
 set t_Co=256 " Explicitly tell vim that the terminal has 256 colors
-
-if has('gui_running')
-  set lines=41
-  set columns=999
-  set guioptions-=T " remove the toolbar
-  set guioptions-=t " remove the tear off toolbar
-  set guioptions-=l " remove the left scrollbar
-  set guioptions-=L " remove the left scrollbar on split
-  set guioptions-=r " remove the right scrollbar
-  set guioptions-=R " remove the right scrollbar on split
-  set guioptions-=b " remove the bottom scrollbar
-  set guioptions-=m " remove the menu
-endif
+colorscheme molokai
+" colorscheme dim
+" set background=light
+" hi Normal ctermbg=White ctermfg=Black
 
 " Leader
 let mapleader = ','
@@ -258,6 +249,45 @@ autocmd BufNewFile,BufRead *.elm set filetype=elm
 let g:elm_make_show_warnings = 0
 let g:elm_make_syntastic_show_warnings = 0
 
+" Ending spaces remove
+autocmd BufWritePre * %s/\s\+$//e
+
+" From github.com/antoine-atmire/dotfiles
+" let g:elm_setup_keybindings = 0
+" let g:elm_format_autosave = 0
+
+" " elm keybindings
+" autocmd vimrc FileType elm nnoremap <buffer> <leader>pe :ElmFormat<cr>
+
+" " keymappings primarly for elm
+" " pretty cases -> turns your comma separated list in case statements
+" autocmd vimrc FileType elm nmap <buffer> <leader>pc ^dt,Op==<<A ->wx<leader>pc
+
+" " experimental insert mode mappings
+" autocmd vimrc FileType elm inoremap <buffer> ; -><space>
+" autocmd vimrc FileType elm inoremap <buffer> $ <bar>><space>
+
+" " go to the definition of the function under the cursoer
+" " Ilist is the ilist variant from romainl/vim-qlist
+" autocmd vimrc FileType elm nnoremap <buffer> <leader>] yiw:Ilist ^\s*<c-r>"\s.*=$<cr>
+
+
+" " I add .elm at the end so Html.elm is not skipped when the directory Html/
+" " exists in the same directory...
+" " I also remove matches in VirtualDom directories
+" function! GetElmFilenameFix(word)
+"     let l:word = a:word
+"     if match(l:word, 'VirtualDom') >= 0
+"         let l:word = ''
+"     else
+"         " replace module dots with slash
+"         let l:word = substitute(l:word,'\.','/','g') .'.elm'
+"     endif
+"     return l:word
+" endfunction
+" autocmd vimrc FileType elm setlocal includeexpr=GetElmFilenameFix(v:fname)
+
+" NERDTree
 let NERDTreeIgnore = ['\.pyc$', '\.class$', '__pycache__']
 map <F2> :NERDTreeToggle<CR>
 "map <C-F2> :NERDTreeFind<CR>
