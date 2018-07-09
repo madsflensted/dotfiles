@@ -26,12 +26,14 @@ Plugin 'VundleVim/Vundle.vim'
 Plugin 'vim-scripts/bufkill.vim'
 Plugin 'talek/obvious-resize'
 Plugin 'vim-scripts/scratch.vim'
-Plugin 'Lokaltog/vim-powerline'
+" Plugin 'Lokaltog/vim-powerline'
+" Plugin 'vim-airline/vim-airline'
 Plugin 'enricobacis/paste.vim'
 
 " Color
-Plugin 'madsflensted/molokai'
-Plugin 'jeffkreeftmeijer/vim-dim'
+" Plugin 'madsflensted/molokai'
+Plugin 'NLKNguyen/papercolor-theme'
+" Plugin 'jeffkreeftmeijer/vim-dim'
 Plugin 'gerw/vim-HiLinkTrace'
 
 " Tmux
@@ -43,6 +45,8 @@ Plugin 'tpope/vim-abolish'
 
 Plugin 'scrooloose/nerdtree'
 Plugin 'kien/ctrlp.vim'
+
+Plugin 'dyng/ctrlsf.vim'
 
 " Code
 Plugin 'tpope/vim-commentary'
@@ -64,15 +68,17 @@ Plugin 'garbas/vim-snipmate'
 Plugin 'honza/vim-snippets'
 
 " Git
-Plugin 'tpope/vim-fugitive'
-Plugin 'junegunn/gv.vim'
+" Plugin 'tpope/vim-fugitive'
+" Plugin 'junegunn/gv.vim'
+Plugin 'airblade/vim-gitgutter'
 
 " Go
 Plugin 'fatih/vim-go'
 
 " Python
-Plugin 'klen/python-mode'
+" Plugin 'klen/python-mode'
 Plugin 'michaeljsmith/vim-indent-object'
+Plugin 'Vimjas/vim-python-pep8-indent'
 Plugin 'zweifisch/pipe2eval'
 " Plugin 'Yggdroot/indentLine'
 Plugin 'alfredodeza/pytest.vim'
@@ -99,7 +105,7 @@ Plugin 'samsonw/vim-task'
 " PlantUml, ascii -> diagram converter
 Plugin 'aklt/plantuml-syntax'
 
-" REST/HTTP curl
+" REST curl
 Plugin 'diepm/vim-rest-console'
 
 " Discarded bundles, keep for reference
@@ -139,10 +145,9 @@ set backspace=indent,eol,start
 
 set mouse=a
 
-" Powerline
+" Status e
 set laststatus=2   " Always show the statusline
 set encoding=utf-8 " Necessary to show Unicode glyphs
-
 
 " Turn automatic comments off
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
@@ -150,16 +155,36 @@ autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 "set autowrite
 set autoread
 
+" Color
+
+let g:PaperColor_Theme_Options = {
+  \   'language': {
+  \     'python': {
+  \       'highlight_builtins' : 1
+  \     },
+  \     'erlang': {
+  \       'highlight_builtins' : 1
+  \     },
+  \     'go': {
+  \       'highlight_builtins' : 1
+  \     }
+  \   }
+  \ }
+
 let g:rehash256 = 1
 set t_Co=256 " Explicitly tell vim that the terminal has 256 colors
-colorscheme molokai
-" colorscheme dim
-" set background=light
+set background=light
+colorscheme PaperColor
 " hi Normal ctermbg=White ctermfg=Black
+
+"let g:airline_theme='papercolor'
 
 " Leader
 let mapleader = ','
 let maplocalleader = "\\"
+
+" tmux
+let g:tmux_navigator_disable_when_zoomed = 1
 
 " Remap esc to the 'smash' (jam k and j down to escape)
 inoremap jk <esc>
@@ -175,7 +200,7 @@ map <c-k> <c-w>k
 map <c-l> <c-w>l
 map <c-h> <c-w>h
 
-" WIndows resize
+" Windows resize
 noremap <silent> <C-Up> :ObviousResizeUp<CR>
 noremap <silent> <C-Down> :ObviousResizeDown<CR>
 noremap <silent> <C-Left> :ObviousResizeLeft<CR>
@@ -184,10 +209,18 @@ noremap <silent> <C-Right> :ObviousResizeRight<CR>
 " REST
 let g:vrc_set_default_mapping = 0
 autocmd BufNewFile,BufRead *.rest set filetype=rest
+let g:vrc_allow_get_request_body = 1
+let g:vrc_response_default_content_type = 'application/json'
+" let g:vrc_auto_format_response_patterns = {
+"   \  'json': 'jq "."',
+"   \ 'xml': 'xmllint --format -',
+" \}
 noremap <silent> <F5> :call VrcQuery()<CR>
 
 " Python
 autocmd FileType python set omnifunc=pythoncomplete#Complete
+"autocmd FileType python set colorcolumn=79
+"autocmd FileType htmldjango set colorcolumn=120
 
 " Python comment and smartindent, avoid moving '#' to beginnin of line
 " Answer found here: http://stackoverflow.com/questions/2063175/vim-insert-mode-comments-go-to-start-of-line
@@ -196,37 +229,37 @@ inoremap # X#
 let g:indentLine_enabled = 0
 
 " Syntastic
-let g:syntastic_mode_map = { 'mode': 'active',
-                           \ 'active_filetypes': [],
-                           \ 'passive_filetypes': ['python'] }
+" let g:syntastic_mode_map = { 'mode': 'active',
+"                            \ 'active_filetypes': [],
+"                            \ 'passive_filetypes': ['python'] }
 
 " Pymode
-let g:pymode_folding = 0
-" let g:pymode_lint_checkers ['pyflakes', 'pep8', 'mccabe']
-" let g:pymode_lint_config = "$HOME/.pylintrc"
-" PEP8 "E501" is equal to pylint "C0301"
-let g:pymode_lint_ignore = "C0301"
-let g:pymode_lint_cwindow = 0
-"let g:pymode_lint_message = 0
-let g:pymode_lint_write = 0
-let g:pymode_lint_onfly = 1
-" This command is to avoid bug in pylint-mode 0.5.6
-"let g:pymode_lint_message = 0
-let g:pymode_virtualenv = 1
-" Autoremove unused whitespaces
-let g:pymode_utils_whitespaces = 1
-" Enable pymode indentation
-let g:pymode_indent = 1
-let g:pymode_rope = 0
-let g:pymode_rope_guess_project = 0
-let g:pymode_rope_completion = 0
-let g:pymode_rope_complete_on_dot = 0
-let g:pymode_options_max_line_length = 79
+"let g:pymode_folding = 0
+"" let g:pymode_lint_checkers ['pyflakes', 'pep8', 'mccabe']
+"" let g:pymode_lint_config = "$HOME/.pylintrc"
+"" PEP8 "E501" is equal to pylint "C0301"
+"let g:pymode_lint_ignore = "C0301"
+"let g:pymode_lint_cwindow = 0
+""let g:pymode_lint_message = 0
+"let g:pymode_lint_write = 0
+"let g:pymode_lint_onfly = 1
+"" This command is to avoid bug in pylint-mode 0.5.6
+""let g:pymode_lint_message = 0
+"let g:pymode_virtualenv = 1
+"" Autoremove unused whitespaces
+"let g:pymode_utils_whitespaces = 1
+"" Enable pymode indentation
+"let g:pymode_indent = 1
+"let g:pymode_rope = 0
+"let g:pymode_rope_guess_project = 0
+"let g:pymode_rope_completion = 0
+"let g:pymode_rope_complete_on_dot = 0
+"let g:pymode_options_max_line_length = 79
 
 "autocmd BufReadCmd *_test.py let g:pymode_lint_ignore="E211"
 
 " Rope
-noremap <silent> <F3> :call pymode#rope#goto_definition()<CR>
+"noremap <silent> <F3> :call pymode#rope#goto_definition()<CR>
 
 let g:SuperTabDefaultCompletionType = "context"
 
@@ -235,7 +268,9 @@ autocmd BufReadCmd *.jar,*.xpi,*.exp,*.ear,*.war call zip#Browse(expand("<amatch
 " ALE
 let g:ale_yaml_yamllint_options = "-d relaxed"
 let g:ale_python_flake8_args = "--ignore=C"
-let g:ale_linters = {'python': ['flake9'], 'erlang': ['syntaxerl']}
+let g:ale_linters = {'python': ['flake8'], 'erlang': ['syntaxerl']}
+"let g:airline#extensions#ale#enabled = 1
+let g:ale_sign_column_always = 1
 
 " CtrlP settings
 set wildignore+=*.sw*,*.pyc,*.class
@@ -302,4 +337,26 @@ function! XmlEscape()
   silent s/>/&gt;/eg
   silent s/'/&apos;/eg
   silent s/"/&quot;/eg
+endfunction
+
+" Show syntax highlighting groups for word under cursor
+" function! <SID>SynStack()
+"     let synID   = synID(v:beval_lnum, v:beval_col, 0)
+"     let groupID = synIDtrans(synID)
+"     let name    = synIDattr(synID, "name")
+"     let group   = synIDattr(groupID, "name")
+"     echo name . "\n" . group
+" endfunction
+
+function! <SID>SynStack()
+    if !exists("*synstack")
+        return
+    endif
+    echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
+    echo synIDattr(diff_hlID(line('.'), col('.')), "name")
+endfunc
+nmap <F3> :call <SID>SynStack()<CR>
+
+function! RemoveEscapeChars() range
+  execute a:firstline . "," . a:lastline . "!sed -r 's~\\x01?(\\x1B\\(B)?\\x1B\\[([0-9;]*)?[JKmsu]\\x02?~~g'"
 endfunction
