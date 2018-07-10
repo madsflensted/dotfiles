@@ -206,6 +206,13 @@ noremap <silent> <C-Down> :ObviousResizeDown<CR>
 noremap <silent> <C-Left> :ObviousResizeLeft<CR>
 noremap <silent> <C-Right> :ObviousResizeRight<CR>
 
+" TagBar
+noremap <F3> :TagbarToggle<CR>
+
+" Search
+nnoremap <F4> :CtrlSF <C-R><C-W><CR>
+nnoremap <S-F4> :CtrlSFToggle<CR>
+
 " REST
 let g:vrc_set_default_mapping = 0
 autocmd BufNewFile,BufRead *.rest set filetype=rest
@@ -355,7 +362,7 @@ function! <SID>SynStack()
     echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
     echo synIDattr(diff_hlID(line('.'), col('.')), "name")
 endfunc
-nmap <F3> :call <SID>SynStack()<CR>
+nmap <F9> :call <SID>SynStack()<CR>
 
 function! RemoveEscapeChars() range
   execute a:firstline . "," . a:lastline . "!sed -r 's~\\x01?(\\x1B\\(B)?\\x1B\\[([0-9;]*)?[JKmsu]\\x02?~~g'"
