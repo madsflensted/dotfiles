@@ -145,10 +145,6 @@ set backspace=indent,eol,start
 
 set mouse=a
 
-" Status e
-set laststatus=2   " Always show the statusline
-set encoding=utf-8 " Necessary to show Unicode glyphs
-
 " Turn automatic comments off
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 
@@ -364,6 +360,30 @@ function! <SID>SynStack()
 endfunc
 nmap <F9> :call <SID>SynStack()<CR>
 
+" Clean up files e.g. from "git diff --color"
 function! RemoveEscapeChars() range
   execute a:firstline . "," . a:lastline . "!sed -r 's~\\x01?(\\x1B\\(B)?\\x1B\\[([0-9;]*)?[JKmsu]\\x02?~~g'"
 endfunction
+
+" Statusline
+" Function: display errors from Ale in statusline
+function! LinterStatus() abort
+   let l:counts = ale#statusline#Count(bufnr(''))
+   let l:all_errors = l:counts.error + l:counts.style_error
+   let l:all_non_errors = l:counts.total - l:all_errors
+   return l:counts.total == 0 ? '' : printf(
+   \ 'W:%d E:%d',
+   \ l:all_non_errors,
+   \ l:all_errors
+   \)
+endfunction
+
+set laststatus=2   " Always show the statusline
+set encoding=utf-8 " Necessary to show Unicode glyphs
+
+set statusline=
+set statusline+=\ %t
+set statusline+=\/%n
+set statusline+=\ %M
+set statusline+=%=
+set statusline+=\ %{LinterStatus()}
