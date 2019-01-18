@@ -1,6 +1,7 @@
 "info
 set nocompatible
 
+" Put swp files in common place
 silent execute '!mkdir -p ~/tmp/vim-backup'
 set directory=~/tmp/vim-backup/
 set backupdir=~/tmp/vim-backup/
@@ -14,7 +15,8 @@ set undofile
 let bundle_path = '~/.vim/bundle'
 silent execute '!mkdir -p ~/.vim/bundle'
 
-filetype off                  " required
+" required, re-enabled later
+filetype off
 
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim/
@@ -23,12 +25,17 @@ call vundle#begin(bundle_path)
 " let Vundle manage Vundle, required
 Plugin 'VundleVim/Vundle.vim'
 
+" Basic Vim
 Plugin 'vim-scripts/bufkill.vim'
 Plugin 'talek/obvious-resize'
 Plugin 'vim-scripts/scratch.vim'
-" Plugin 'Lokaltog/vim-powerline'
-" Plugin 'vim-airline/vim-airline'
 Plugin 'enricobacis/paste.vim'
+
+" Substitute while preserving casing
+Plugin 'tpope/vim-abolish'
+
+" Diff
+Plugin 'AndrewRadev/linediff.vim'
 
 " Color
 " Plugin 'madsflensted/molokai'
@@ -40,37 +47,58 @@ Plugin 'gerw/vim-HiLinkTrace'
 Plugin 'christoomey/vim-tmux-navigator'
 Plugin 'benmills/vimux'
 
-" Substituate and preserve casing
-Plugin 'tpope/vim-abolish'
-
+" Files
 Plugin 'scrooloose/nerdtree'
 Plugin 'kien/ctrlp.vim'
 
+" Search via rg
 Plugin 'dyng/ctrlsf.vim'
 
-" Code
+" Comment switcher
 Plugin 'tpope/vim-commentary'
+
+" Change pairs {} () [] etc
 Plugin 'tpope/vim-surround'
-" Conflict with ale
-" Plugin 'scrooloose/syntastic'
-Plugin 'AndrewRadev/linediff.vim'
+
+" Lint Engine
 Plugin 'w0rp/ale'
+
+" Code completion
 Plugin 'maralla/completor.vim'
 
 " Ctags and Universal Ctags
 Plugin 'majutsushi/tagbar'
 
 " Snipmate
-Plugin 'MarcWeber/vim-addon-mw-utils'
-Plugin 'tomtom/tlib_vim'
-Plugin 'garbas/vim-snipmate'
+" Plugin 'MarcWeber/vim-addon-mw-utils'
+" Plugin 'tomtom/tlib_vim'
+" Plugin 'garbas/vim-snipmate'
 " Optional:
-Plugin 'honza/vim-snippets'
+" Plugin 'honza/vim-snippets'
 
 " Git
 " Plugin 'tpope/vim-fugitive'
 " Plugin 'junegunn/gv.vim'
 Plugin 'airblade/vim-gitgutter'
+
+" Ansible
+Plugin 'pearofducks/ansible-vim'
+
+" Dhall
+Plugin 'vmchale/dhall-vim'
+
+" Elixir
+Plugin 'elixir-lang/vim-elixir'
+Plugin 'carlosgaldino/elixir-snippets'
+
+" Elm
+Plugin 'ElmCast/elm-vim'
+Plugin 'bitterjug/vim-tagbar-ctags-elm'
+
+" Erlang
+" Plugin 'vim-erlang/vim-erlang-runtime'
+" Plugin 'vim-erlang/vim-erlang-compiler'
+" Plugin 'vim-erlang/vim-erlang-tags'
 
 " Go
 Plugin 'fatih/vim-go'
@@ -83,54 +111,37 @@ Plugin 'zweifisch/pipe2eval'
 " Plugin 'Yggdroot/indentLine'
 Plugin 'alfredodeza/pytest.vim'
 
-" Ansible
-Plugin 'pearofducks/ansible-vim'
-
-" Elm
-Plugin 'ElmCast/elm-vim'
-Plugin 'bitterjug/vim-tagbar-ctags-elm'
-
-" Erlang
-" Plugin 'vim-erlang/vim-erlang-runtime'
-" Plugin 'vim-erlang/vim-erlang-compiler'
-" Plugin 'vim-erlang/vim-erlang-tags'
-
-" Elixir
-Plugin 'elixir-lang/vim-elixir'
-Plugin 'carlosgaldino/elixir-snippets'
-
-" Tasks
-Plugin 'samsonw/vim-task'
-
-" PlantUml, ascii -> diagram converter
-Plugin 'aklt/plantuml-syntax'
-
 " REST curl
 Plugin 'diepm/vim-rest-console'
 
+" Notes and Todos
+" Plugin 'samsonw/vim-task'
+Plugin 'vimwiki/vimwiki', { 'branch': 'dev' }
+
+" Diagrams
+" PlantUml, ascii -> diagram converter
+Plugin 'aklt/plantuml-syntax'
+Plugin 'gyim/vim-boxdraw'
+
 " Discarded bundles, keep for reference
-" jedi-vim: slowed vim response
-"Bundle 'davidhalter/jedi-vim'
-"Bundle 'Shougo/vimproc.vim'
-"Bundle 'Shougo/vimshell.vim'
+" Plugin 'scrooloose/syntastic' " Conflict with ale
+" Plugin jedi-vim: slowed vim response
+" Plugin 'davidhalter/jedi-vim'
+" Plugin 'Shougo/vimproc.vim'
+" Plugin 'Shougo/vimshell.vim'
 
 call vundle#end()
 filetype plugin indent on
 
 syntax on
 
+" Search
 "set ignorecase
 set hlsearch " highlight search terms
 set incsearch " find as you type search
+
+" Visual and Editor
 set linebreak
-
-set wildmenu wildmode=full
-set wildignore+=*/.git/*,*/.hg/*,*/.svn/*
-set completeopt=menuone,longest,preview
-
-"Avoid "Press ENTER..." prompt when opening new file. See hit-enter for more
-set cmdheight=2
-
 set tabstop=2
 set softtabstop=2
 set shiftwidth=2
@@ -139,11 +150,18 @@ set expandtab
 set smarttab
 set autoindent
 set showmatch
-
 set number
 set backspace=indent,eol,start
 
 set mouse=a
+
+" Completion
+set wildmenu wildmode=full
+set wildignore+=*/.git/*,*/.hg/*,*/.svn/*
+set completeopt=menuone,longest,preview
+
+"Avoid "Press ENTER..." prompt when opening new file. See hit-enter for more
+set cmdheight=2
 
 " Turn automatic comments off
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
@@ -152,7 +170,8 @@ autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 set autoread
 
 " Color
-
+" Remember - in terminal the cursor color
+"   is defined in terminal app not in the colorscheme
 let g:PaperColor_Theme_Options = {
   \   'language': {
   \     'python': {
@@ -164,6 +183,13 @@ let g:PaperColor_Theme_Options = {
   \     'go': {
   \       'highlight_builtins' : 1
   \     }
+  \   },
+  \   'theme': {
+  \     'default.light': {
+  \       'override' : {
+  \         'matchparen_bg' : ['#dadada', '253']
+  \       }
+  \     }
   \   }
   \ }
 
@@ -172,8 +198,6 @@ set t_Co=256 " Explicitly tell vim that the terminal has 256 colors
 set background=light
 colorscheme PaperColor
 " hi Normal ctermbg=White ctermfg=Black
-
-"let g:airline_theme='papercolor'
 
 " Leader
 let mapleader = ','
@@ -197,10 +221,19 @@ map <c-l> <c-w>l
 map <c-h> <c-w>h
 
 " Windows resize
+" Not working?
 noremap <silent> <C-Up> :ObviousResizeUp<CR>
 noremap <silent> <C-Down> :ObviousResizeDown<CR>
 noremap <silent> <C-Left> :ObviousResizeLeft<CR>
 noremap <silent> <C-Right> :ObviousResizeRight<CR>
+
+" Remove spaces at end of lines for all files
+autocmd BufWritePre * %s/\s\+$//e
+
+" NERDTree
+let NERDTreeIgnore = ['\.pyc$', '\.class$', '__pycache__']
+map <F2> :NERDTreeToggle<CR>
+"map <C-F2> :NERDTreeFind<CR>
 
 " TagBar
 noremap <F3> :TagbarToggle<CR>
@@ -229,50 +262,16 @@ autocmd FileType python set omnifunc=pythoncomplete#Complete
 " Answer found here: http://stackoverflow.com/questions/2063175/vim-insert-mode-comments-go-to-start-of-line
 inoremap # X#
 
-let g:indentLine_enabled = 0
+" indentLine
+" let g:indentLine_enabled = 0
 
-" Syntastic
-" let g:syntastic_mode_map = { 'mode': 'active',
-"                            \ 'active_filetypes': [],
-"                            \ 'passive_filetypes': ['python'] }
-
-" Pymode
-"let g:pymode_folding = 0
-"" let g:pymode_lint_checkers ['pyflakes', 'pep8', 'mccabe']
-"" let g:pymode_lint_config = "$HOME/.pylintrc"
-"" PEP8 "E501" is equal to pylint "C0301"
-"let g:pymode_lint_ignore = "C0301"
-"let g:pymode_lint_cwindow = 0
-""let g:pymode_lint_message = 0
-"let g:pymode_lint_write = 0
-"let g:pymode_lint_onfly = 1
-"" This command is to avoid bug in pylint-mode 0.5.6
-""let g:pymode_lint_message = 0
-"let g:pymode_virtualenv = 1
-"" Autoremove unused whitespaces
-"let g:pymode_utils_whitespaces = 1
-"" Enable pymode indentation
-"let g:pymode_indent = 1
-"let g:pymode_rope = 0
-"let g:pymode_rope_guess_project = 0
-"let g:pymode_rope_completion = 0
-"let g:pymode_rope_complete_on_dot = 0
-"let g:pymode_options_max_line_length = 79
-
-"autocmd BufReadCmd *_test.py let g:pymode_lint_ignore="E211"
-
-" Rope
-"noremap <silent> <F3> :call pymode#rope#goto_definition()<CR>
-
-let g:SuperTabDefaultCompletionType = "context"
-
+" Read archives
 autocmd BufReadCmd *.jar,*.xpi,*.exp,*.ear,*.war call zip#Browse(expand("<amatch>"))
 
 " ALE
 let g:ale_yaml_yamllint_options = "-d relaxed"
 let g:ale_python_flake8_args = "--ignore=C"
 let g:ale_linters = {'python': ['flake8'], 'erlang': ['syntaxerl']}
-"let g:airline#extensions#ale#enabled = 1
 let g:ale_sign_column_always = 1
 
 " CtrlP settings
@@ -286,9 +285,6 @@ autocmd BufNewFile,BufRead *.elm set filetype=elm
 "autocmd BufNewFile,BufRead *.json set ft=javascript
 let g:elm_make_show_warnings = 0
 let g:elm_make_syntastic_show_warnings = 0
-
-" Ending spaces remove
-autocmd BufWritePre * %s/\s\+$//e
 
 " From github.com/antoine-atmire/dotfiles
 " let g:elm_setup_keybindings = 0
@@ -325,10 +321,12 @@ autocmd BufWritePre * %s/\s\+$//e
 " endfunction
 " autocmd vimrc FileType elm setlocal includeexpr=GetElmFilenameFix(v:fname)
 
-" NERDTree
-let NERDTreeIgnore = ['\.pyc$', '\.class$', '__pycache__']
-map <F2> :NERDTreeToggle<CR>
-"map <C-F2> :NERDTreeFind<CR>
+
+" Dhall
+" Insert unicode chars for Lambda, Arrow and Union
+dig La 955
+dig Ar 8594
+dig Un 8743
 
 " PlantUml
 let g:plantuml_executable_script='java -jar $HOME/local/plantuml.jar'
@@ -365,7 +363,21 @@ function! RemoveEscapeChars() range
   execute a:firstline . "," . a:lastline . "!sed -r 's~\\x01?(\\x1B\\(B)?\\x1B\\[([0-9;]*)?[JKmsu]\\x02?~~g'"
 endfunction
 
+" Diff handling
+function! DiffFold(lnum)
+  let line = getline(a:lnum)
+  if line =~ '^\(diff\|---\|+++\|@@\) '
+    return 1
+  elseif line[0] =~ '[-+ ]'
+    return 2
+  else
+    return 0
+  endif
+endfunction
+autocmd FileType diff,patch setlocal foldmethod=expr foldexpr=DiffFold(v:lnum)
+
 " Statusline
+" Inspiration https://hackernoon.com/the-last-statusline-for-vim-a613048959b2
 " Function: display errors from Ale in statusline
 function! LinterStatus() abort
    let l:counts = ale#statusline#Count(bufnr(''))
@@ -387,3 +399,39 @@ set statusline+=\/%n
 set statusline+=\ %M
 set statusline+=%=
 set statusline+=\ %{LinterStatus()}
+
+" OCaml
+autocmd FileType ocaml setlocal commentstring=(*\ %s\ *)
+
+" ## added by OPAM user-setup for vim / base ## 93ee63e278bdfc07d1139a748ed3fff2 ## you can edit, but keep this line
+let s:opam_share_dir = system("opam config var share")
+let s:opam_share_dir = substitute(s:opam_share_dir, '[\r\n]*$', '', '')
+
+let s:opam_configuration = {}
+
+function! OpamConfOcpIndent()
+  execute "set rtp^=" . s:opam_share_dir . "/ocp-indent/vim"
+endfunction
+let s:opam_configuration['ocp-indent'] = function('OpamConfOcpIndent')
+
+function! OpamConfOcpIndex()
+  execute "set rtp+=" . s:opam_share_dir . "/ocp-index/vim"
+endfunction
+let s:opam_configuration['ocp-index'] = function('OpamConfOcpIndex')
+
+function! OpamConfMerlin()
+  let l:dir = s:opam_share_dir . "/merlin/vim"
+  execute "set rtp+=" . l:dir
+endfunction
+let s:opam_configuration['merlin'] = function('OpamConfMerlin')
+
+let s:opam_packages = ["ocp-indent", "ocp-index", "merlin"]
+let s:opam_check_cmdline = ["opam list --installed --short --safe --color=never"] + s:opam_packages
+let s:opam_available_tools = split(system(join(s:opam_check_cmdline)))
+for tool in s:opam_packages
+  " Respect package order (merlin should be after ocp-index)
+  if count(s:opam_available_tools, tool) > 0
+    call s:opam_configuration[tool]()
+  endif
+endfor
+" ## end of OPAM user-setup addition for vim / base ## keep this line
